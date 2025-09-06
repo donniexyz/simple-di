@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.michaelboyles</groupId>
         <artifactId>simple-di-parent</artifactId>
-        <version>${revision}</version>
+        <version>1.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <description>A module for experiments, which depends on the plugin module</description>
@@ -46,6 +46,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>

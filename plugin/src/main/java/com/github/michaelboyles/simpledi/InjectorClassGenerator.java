@@ -1,14 +1,10 @@
 package com.github.michaelboyles.simpledi;
 
-import com.palantir.javapoet.CodeBlock;
-import com.palantir.javapoet.FieldSpec;
-import com.palantir.javapoet.JavaFile;
-import com.palantir.javapoet.MethodSpec;
-import com.palantir.javapoet.ParameterizedTypeName;
-import com.palantir.javapoet.TypeSpec;
+import com.palantir.javapoet.*;
 import lombok.RequiredArgsConstructor;
 
 import javax.lang.model.element.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +26,120 @@ class InjectorClassGenerator {
     public JavaFile generateClass() {
         TypeSpec helloWorld = TypeSpec.classBuilder(className)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            .addSuperinterface(ISimpleDIContext.class)
+            .addField(getSelfInstance())
+            .addField(getStaticListField())
             .addField(getNameToBeanMapField())
+            .addField(getClassToBeanMapListField())
             .addMethod(getConstructor())
             .addMethod(getBeanByNameMethod())
+            .addMethod(putIntoClassMapListMethod())
+            .addMethod(putIntoClassMapListMethod2())
+            .addMethod(getBeanByTypeMethod())
             .build();
-        return JavaFile.builder(INJECTOR_PACKAGE_NAME, helloWorld).build();
+        return JavaFile.builder(INJECTOR_PACKAGE_NAME, helloWorld)
+                .build();
+    }
+
+    private FieldSpec getStaticListField() {
+        return FieldSpec.builder(ParameterizedTypeName.get(List.class, Object.class), "allBeans")
+                .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+                .initializer("new $T<>()", ClassName.get(ArrayList.class))
+                .build();
+    }
+
+    private MethodSpec putIntoClassMapListMethod2() {
+        // Define the return type: List<T>
+        TypeName returnType = ParameterizedTypeName.get(
+                ClassName.get(List.class),
+                TypeName.get(Object.class)
+        );
+
+        return MethodSpec.methodBuilder("putIntoClassMapList")
+                .addModifiers(Modifier.PRIVATE)
+                .returns(returnType)
+                .addParameter(Class.class, "aClass")
+                .addParameter(Object.class, "object")
+                .addStatement(
+                        "if (!classToBean.containsKey(aClass)) classToBean.put(aClass, new ArrayList<>());\n" +
+                        "List<Object> list = classToBean.get(aClass);\n" +
+                        "list.add(object);\n" +
+                        "return list\n")
+                .build();
+    }
+    private MethodSpec putIntoClassMapListMethod() {
+        // Define the return type: List<T>
+        TypeName returnType = ParameterizedTypeName.get(
+                ClassName.get(List.class),
+                TypeName.get(Object.class)
+        );
+
+        return MethodSpec.methodBuilder("putIntoClassMapList")
+                .addModifiers(Modifier.PRIVATE)
+                .returns(returnType)
+                .addParameter(Object.class, "object")
+                .addStatement("if (null == object) return null;\n" +
+                        "Class<?> aClass = object.getClass();\n" +
+                        "List<Object> list;\n" +
+                        "list = putIntoClassMapList(aClass, object);\n" +
+                        "\n" +
+                        "Class<?> superclass = aClass.getSuperclass();\n" +
+                        "while (superclass != null) {\n" +
+                        "    putIntoClassMapList(superclass, object);\n" +
+                        "    superclass = superclass.getSuperclass();\n" +
+                        "}\n" +
+                        "\n" +
+                        "Class<?>[] interfaces = aClass.getInterfaces();\n" +
+                        "for (Class<?> iface : interfaces) {\n" +
+                        "    putIntoClassMapList(iface, object);\n" +
+                        "}\n" +
+                        "\n" +
+                        "return list\n")
+                .build();
+    }
+
+    private static MethodSpec getBeanByTypeMethod() {
+        // Define the generic type variable <T>
+        TypeVariableName typeVariableT = TypeVariableName.get("T");
+
+        // Define the return type: List<T>
+        TypeName returnType = ParameterizedTypeName.get(
+                ClassName.get(List.class),
+                typeVariableT
+        );
+
+        // Define the parameter: Class<T> tClass
+        TypeName classT = ParameterizedTypeName.get(
+                ClassName.get(Class.class),
+                typeVariableT
+        );
+
+        // Build the method using MethodSpec.Builder
+        return MethodSpec.methodBuilder("getBeanByType")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addTypeVariable(typeVariableT) // Add the generic type
+                .returns(returnType)
+                .addParameter(classT, "tClass")
+                .addStatement("return ($T) classToBean.get(tClass)", returnType)
+                .build();
+    }
+
+    private FieldSpec getClassToBeanMapListField() {
+        return FieldSpec.builder(ParameterizedTypeName.get(
+                        ClassName.get(Map.class),
+                        ParameterizedTypeName.get(ClassName.get(Class.class), WildcardTypeName.subtypeOf(Object.class)),
+                        ParameterizedTypeName.get(ClassName.get(List.class), TypeName.get(Object.class))
+                ), "classToBean")
+                .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+                .initializer("new $T<>()", HashMap.class)
+                .build();
+    }
+
+    private FieldSpec getSelfInstance() {
+        return FieldSpec.builder(ParameterizedTypeName.get(ISimpleDIContext.class), "INSTANCE")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .build();
     }
 
     private FieldSpec getNameToBeanMapField() {
@@ -60,7 +165,16 @@ class InjectorClassGenerator {
         for (Bean bean : sortedBeans) {
             addBeanRegistration(builder, bean);
         }
+        for (Bean bean : sortedBeans) {
+            addBeanClassRegistration(builder, bean);
+        }
+        builder.addStatement("if (null == INSTANCE) INSTANCE = this");
         return builder.build();
+    }
+
+    private void addBeanClassRegistration(MethodSpec.Builder builder, Bean bean) {
+        String id = getIdentifier(bean);
+        builder.addStatement("$L($S)", "putIntoClassMapList", id);
     }
 
     private List<Bean> getProvidedBeans(List<Bean> beans) {
@@ -99,6 +213,7 @@ class InjectorClassGenerator {
     private MethodSpec getBeanByNameMethod() {
         return MethodSpec.methodBuilder("getBeanByName")
             .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
             .returns(Object.class)
             .addParameter(String.class, "name")
             .addStatement("return $L.get($L)", MAP_FIELD_NAME, "name")

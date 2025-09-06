@@ -28,6 +28,7 @@
 
         <palantir.javapoet.version>0.7.0</palantir.javapoet.version>
         <lombok.version>1.18.40</lombok.version>
+        <jakarta.inject-api.version>2.0.1</jakarta.inject-api.version>
         <auto-service.version>1.1.1</auto-service.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 
@@ -38,7 +39,7 @@
             <dependency>
                 <groupId>jakarta.inject</groupId>
                 <artifactId>jakarta.inject-api</artifactId>
-                <version>2.0.1</version>
+                <version>${jakarta.inject-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>

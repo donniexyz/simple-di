@@ -2,35 +2,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>com.github.michaelboyles</groupId>
-        <artifactId>simple-di-parent</artifactId>
-        <version>1.0.1</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.michaelboyles</groupId>
+    <artifactId>simple-di-sample</artifactId>
+    <version>1.0.1</version>
     <description>A module for experiments, which depends on the plugin module</description>
 
-    <artifactId>simple-di-sample</artifactId>
+    <properties>
+        <java.version>24</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <simple-di.version>1.0.1</simple-di.version>
+        <lombok.version>1.18.40</lombok.version>
+
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.inject</groupId>
-            <artifactId>jakarta.inject-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.michaelboyles</groupId>
             <artifactId>simple-di</artifactId>
-            <version>${revision}</version>
+            <version>${simple-di.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.michaelboyles</groupId>
             <artifactId>simple-di-runtime</artifactId>
-            <version>${revision}</version>
+            <version>${simple-di.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -57,7 +63,7 @@
                         <path>
                             <groupId>com.github.michaelboyles</groupId>
                             <artifactId>simple-di</artifactId>
-                            <version>${revision}</version>
+                            <version>${simple-di.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

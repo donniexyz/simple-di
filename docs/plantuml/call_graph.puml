@@ -1,0 +1,189 @@
+@startuml
+hide empty circle
+hide empty members
+left to right direction
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+
+title "Call graph for SimpleDI annotation processor"
+component Bean as " A bean that was found by annotation processing\n Bean" {
+  component Bean_addDependency as " + addDependency"
+  component Bean_addInjectMethod as " + addInjectMethod"
+  component Bean_getFqn as " Get the fully qualif\n + getFqn"
+  component Bean_getAllFqns as " Get the fully qualif\n + getAllFqns"
+  component Bean_getAllInterfaces as " - getAllInterfaces"
+  component Bean_getAllSuperclasses as " - getAllSuperclasses"
+  component Bean_getElement as " - getElement"
+  component Bean_getProvidedBeans as " + getProvidedBeans"
+}
+
+component Dependency as " Dependency" {
+  component Dependency_allBeans as " Get the beans which\n +A allBeans"
+  component Dependency_directBeans as " Get the beans which\n +A directBeans"
+  component Dependency_getArgumentExpression as " Get an expression wh\n +A getArgumentExpression"
+}
+
+component BasicDependency as " The most common type of dependency,\n directly upon another bean\n BasicDependency" {
+  component BasicDependency_allBeans as " Get the beans which\n +O allBeans"
+  component BasicDependency_directBeans as " Get the beans which\n +O directBeans"
+  component BasicDependency_getArgumentExpression as " Get an expression wh\n +O getArgumentExpression"
+}
+
+component DiscoveredBeans as " A collection of Beans\n which provides a few helpful ways of accessing them\n DiscoveredBeans" {
+  component DiscoveredBeans_DiscoveredBeans as " ~C DiscoveredBeans"
+  component DiscoveredBeans_all as " + all"
+  component DiscoveredBeans_beansExtending as " + beansExtending"
+  component DiscoveredBeans_beansWithExactFqn as " + beansWithExactFqn"
+  component DiscoveredBeans_byNumDependencies as " + byNumDependencies"
+  component DiscoveredBeans_getNumDependencies as " - getNumDependencies"
+  component DiscoveredBeans_fqnToBeans as " -S fqnToBeans"
+}
+
+component ArrayFactoryMethod as " A factory method for an array\n ArrayFactoryMethod" {
+  component ArrayFactoryMethod_instantiateCollection as " +O instantiateCollection"
+}
+
+component ProviderDependency as " A dependency via the indirection of a Provider\n ProviderDependency" {
+  component ProviderDependency_allBeans as " Get the beans which\n +O allBeans"
+  component ProviderDependency_directBeans as " Get the beans which\n +O directBeans"
+  component ProviderDependency_getArgumentExpression as " Get an expression wh\n +O getArgumentExpression"
+}
+
+component SingletonProcessor as " An annotation processor which scans for classes annotated with Singleton\n and creates a dependency injection context\n SingletonProcessor" {
+  component SingletonProcessor_process as " Processor\n +O process"
+  component SingletonProcessor_findBeans as " - findBeans"
+  component SingletonProcessor_getName as " - getName"
+  component SingletonProcessor_getConstructor as " - getConstructor"
+  component SingletonProcessor_addDependenciesToBeans as " - addDependenciesToBeans"
+  component SingletonProcessor_findDependenciesForParam as " - findDependenciesForParam"
+  component SingletonProcessor_getCollectionContents as " - getCollectionContents"
+  component SingletonProcessor_tryToDisambiguateWithNamedAnnotation as " - tryToDisambiguateWithNamedAnnotation"
+  component SingletonProcessor_getSingleGenericTypeParam as " - getSingleGenericTypeParam"
+  component SingletonProcessor_getProviderContents as " - getProviderContents"
+  component SingletonProcessor_addInjectMethods as " - addInjectMethods"
+  component SingletonProcessor_getInjectAnnotatedMethods as " - getInjectAnnotatedMethods"
+}
+
+component CollectionDependency as " A dependency on a collection, e.g. List or Set.\n This will wire all beans of the corresponding type\n CollectionDependency" {
+  component CollectionDependency_CollectionDependency as " ~C CollectionDependency"
+  component CollectionDependency_allBeans as " Get the beans which\n +O allBeans"
+  component CollectionDependency_directBeans as " Get the beans which\n +O directBeans"
+  component CollectionDependency_getArgumentExpression as " Get an expression wh\n +O getArgumentExpression"
+}
+
+component InjectorClassGenerator as " Generates a class which performs dependency injection\n InjectorClassGenerator" {
+  component InjectorClassGenerator_generateClass as " + generateClass"
+  component InjectorClassGenerator_getStaticListField as " - getStaticListField"
+  component InjectorClassGenerator_putIntoClassMapListMethod2 as " - putIntoClassMapListMethod2"
+  component InjectorClassGenerator_putIntoClassMapListMethod as " - putIntoClassMapListMethod"
+  component InjectorClassGenerator_getBeanByTypeMethod as " -S getBeanByTypeMethod"
+  component InjectorClassGenerator_getClassToBeanMapListField as " - getClassToBeanMapListField"
+  component InjectorClassGenerator_getSelfInstance as " - getSelfInstance"
+  component InjectorClassGenerator_getNameToBeanMapField as " - getNameToBeanMapField"
+  component InjectorClassGenerator_getConstructor as " - getConstructor"
+  component InjectorClassGenerator_addBeanClassRegistration as " - addBeanClassRegistration"
+  component InjectorClassGenerator_getProvidedBeans as " - getProvidedBeans"
+  component InjectorClassGenerator_addProviderInstantiation as " - addProviderInstantiation"
+  component InjectorClassGenerator_addBeanInstantiation as " - addBeanInstantiation"
+  component InjectorClassGenerator_addBeanRegistration as " - addBeanRegistration"
+  component InjectorClassGenerator_getBeanByNameMethod as " - getBeanByNameMethod"
+  component InjectorClassGenerator_addInjectMethodInvocations as " - addInjectMethodInvocations"
+  component InjectorClassGenerator_getArgumentList as " - getArgumentList"
+  component InjectorClassGenerator_getIdentifier as " - getIdentifier"
+}
+
+component CollectionFactoryMethod as " A static factory method for a Collection,\n which accepts 1 varargs parameter for the contents of the collection\n CollectionFactoryMethod" {
+  component CollectionFactoryMethod_instantiateCollection as " +A instantiateCollection"
+}
+
+component CollectionOfFactoryMethod as " A factory method for the immutable collections\n CollectionOfFactoryMethod" {
+  component CollectionOfFactoryMethod_instantiateCollection as " +O instantiateCollection"
+}
+
+component CollectionConstructorFactoryMethod as " A factory method for Collections which provide a constructor\n that takes a single Collection parameter, e.g. ArrayList\n CollectionConstructorFactoryMethod" {
+  component CollectionConstructorFactoryMethod_instantiateCollection as " +O instantiateCollection"
+}
+
+
+Bean_getAllFqns --> Bean_getAllInterfaces
+Bean_getAllFqns --> Bean_getAllSuperclasses
+Bean_getAllInterfaces --> Bean_getElement
+Bean_getAllSuperclasses --> Bean_getElement
+Bean_getProvidedBeans --> ProviderDependency_allBeans
+Dependency_allBeans --> CollectionDependency_allBeans
+Dependency_allBeans --> ProviderDependency_allBeans
+Dependency_allBeans --> BasicDependency_allBeans
+Dependency_directBeans --> ProviderDependency_directBeans
+Dependency_directBeans --> BasicDependency_directBeans
+Dependency_directBeans --> CollectionDependency_directBeans
+Dependency_getArgumentExpression --> BasicDependency_getArgumentExpression
+Dependency_getArgumentExpression --> CollectionDependency_getArgumentExpression
+Dependency_getArgumentExpression --> ProviderDependency_getArgumentExpression
+BasicDependency_directBeans --> BasicDependency_allBeans
+DiscoveredBeans_DiscoveredBeans --> DiscoveredBeans_fqnToBeans
+DiscoveredBeans_beansWithExactFqn --> DiscoveredBeans_beansExtending
+DiscoveredBeans_beansWithExactFqn --> Bean_getFqn
+DiscoveredBeans_byNumDependencies --> DiscoveredBeans_getNumDependencies
+DiscoveredBeans_byNumDependencies --> Bean_getFqn
+DiscoveredBeans_getNumDependencies --> Bean_getFqn
+DiscoveredBeans_getNumDependencies --> Dependency_directBeans
+DiscoveredBeans_getNumDependencies --> DiscoveredBeans_getNumDependencies
+DiscoveredBeans_fqnToBeans --> Bean_getAllFqns
+SingletonProcessor_process --> SingletonProcessor_findBeans
+SingletonProcessor_process --> DiscoveredBeans_all
+SingletonProcessor_process --> SingletonProcessor_addDependenciesToBeans
+SingletonProcessor_process --> SingletonProcessor_addInjectMethods
+SingletonProcessor_process --> DiscoveredBeans_byNumDependencies
+SingletonProcessor_process --> InjectorClassGenerator_generateClass
+SingletonProcessor_findBeans --> SingletonProcessor_getName
+SingletonProcessor_findBeans --> SingletonProcessor_getConstructor
+SingletonProcessor_addDependenciesToBeans --> DiscoveredBeans_all
+SingletonProcessor_addDependenciesToBeans --> SingletonProcessor_findDependenciesForParam
+SingletonProcessor_addDependenciesToBeans --> Bean_addDependency
+SingletonProcessor_findDependenciesForParam --> DiscoveredBeans_beansExtending
+SingletonProcessor_findDependenciesForParam --> SingletonProcessor_getProviderContents
+SingletonProcessor_findDependenciesForParam --> SingletonProcessor_getCollectionContents
+SingletonProcessor_findDependenciesForParam --> Bean_getFqn
+SingletonProcessor_findDependenciesForParam --> SingletonProcessor_tryToDisambiguateWithNamedAnnotation
+SingletonProcessor_getCollectionContents --> SingletonProcessor_getSingleGenericTypeParam
+SingletonProcessor_getCollectionContents --> DiscoveredBeans_beansExtending
+SingletonProcessor_getCollectionContents --> DiscoveredBeans_beansWithExactFqn
+SingletonProcessor_tryToDisambiguateWithNamedAnnotation --> Bean_getFqn
+SingletonProcessor_getProviderContents --> SingletonProcessor_getCollectionContents
+SingletonProcessor_getProviderContents --> Bean_getFqn
+SingletonProcessor_getProviderContents --> SingletonProcessor_tryToDisambiguateWithNamedAnnotation
+SingletonProcessor_addInjectMethods --> SingletonProcessor_getInjectAnnotatedMethods
+SingletonProcessor_addInjectMethods --> SingletonProcessor_findDependenciesForParam
+SingletonProcessor_addInjectMethods --> Bean_addInjectMethod
+CollectionDependency_getArgumentExpression --> CollectionFactoryMethod_instantiateCollection
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_getSelfInstance
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_getStaticListField
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_getNameToBeanMapField
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_getClassToBeanMapListField
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_getConstructor
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_getBeanByNameMethod
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_putIntoClassMapListMethod
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_putIntoClassMapListMethod2
+InjectorClassGenerator_generateClass --> InjectorClassGenerator_getBeanByTypeMethod
+InjectorClassGenerator_getConstructor --> InjectorClassGenerator_getProvidedBeans
+InjectorClassGenerator_getConstructor --> InjectorClassGenerator_addProviderInstantiation
+InjectorClassGenerator_getConstructor --> InjectorClassGenerator_addBeanInstantiation
+InjectorClassGenerator_getConstructor --> InjectorClassGenerator_addInjectMethodInvocations
+InjectorClassGenerator_getConstructor --> InjectorClassGenerator_addBeanRegistration
+InjectorClassGenerator_getConstructor --> InjectorClassGenerator_addBeanClassRegistration
+InjectorClassGenerator_addBeanClassRegistration --> InjectorClassGenerator_getIdentifier
+InjectorClassGenerator_getProvidedBeans --> Bean_getProvidedBeans
+InjectorClassGenerator_addProviderInstantiation --> InjectorClassGenerator_getIdentifier
+InjectorClassGenerator_addBeanInstantiation --> InjectorClassGenerator_getIdentifier
+InjectorClassGenerator_addBeanInstantiation --> InjectorClassGenerator_getArgumentList
+InjectorClassGenerator_addBeanRegistration --> InjectorClassGenerator_getIdentifier
+InjectorClassGenerator_addInjectMethodInvocations --> InjectorClassGenerator_getIdentifier
+InjectorClassGenerator_addInjectMethodInvocations --> InjectorClassGenerator_getArgumentList
+InjectorClassGenerator_getArgumentList --> Dependency_getArgumentExpression
+InjectorClassGenerator_getArgumentList --> InjectorClassGenerator_getIdentifier
+InjectorClassGenerator_getIdentifier --> Bean_getFqn
+CollectionFactoryMethod_instantiateCollection --> CollectionConstructorFactoryMethod_instantiateCollection
+CollectionFactoryMethod_instantiateCollection --> CollectionOfFactoryMethod_instantiateCollection
+CollectionFactoryMethod_instantiateCollection --> ArrayFactoryMethod_instantiateCollection
+@enduml

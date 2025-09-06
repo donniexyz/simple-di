@@ -1,0 +1,95 @@
+@startuml
+class CollectionOfFactoryMethod {
++ CodeBlock instantiateCollection(CodeBlock)
+}
+
+class CollectionDependency {
++ List<Bean> allBeans()
++ List<Bean> directBeans()
++ CodeBlock getArgumentExpression(Function<Bean,String>)
+}
+
+class SingletonProcessor {
++ boolean process(Set<? extends TypeElement>,RoundEnvironment)
+}
+
+class ArrayFactoryMethod {
++ CodeBlock instantiateCollection(CodeBlock)
+}
+
+class ProviderDependency {
+~ {static} String PROVIDER_IDENTIFIER_SUFFIX
++ List<Bean> allBeans()
++ List<Bean> directBeans()
++ CodeBlock getArgumentExpression(Function<Bean,String>)
+}
+
+
+class CollectionConstructorFactoryMethod {
++ CodeBlock instantiateCollection(CodeBlock)
+}
+
+interface CollectionFactoryMethod {
+~ CodeBlock instantiateCollection(CodeBlock)
+}
+
+class InjectMethod {
++ ExecutableElement element()
++ List<Dependency> dependencies()
+}
+
+class DiscoveredBeans {
++ List<Bean> all()
++ List<Bean> beansExtending(String)
++ List<Bean> beansWithExactFqn(String)
++ List<Bean> byNumDependencies()
+}
+
+class Bean {
++ void addDependency(Dependency)
++ void addInjectMethod(InjectMethod)
++ String getFqn()
++ Collection<String> getAllFqns()
++ List<Bean> getProvidedBeans()
+}
+
+class Const {
+~ {static} String INJECTOR_CLASS_NAME
+~ {static} String INJECTOR_PACKAGE_NAME
+~ {static} Map<Class<?>,CollectionFactoryMethod> COLLECTION_TO_FACTORY_METHOD
+}
+
+class BasicDependency {
++ List<Bean> allBeans()
++ List<Bean> directBeans()
++ CodeBlock getArgumentExpression(Function<Bean,String>)
+}
+
+interface Dependency {
+~ List<Bean> allBeans()
+~ List<Bean> directBeans()
+~ CodeBlock getArgumentExpression(Function<Bean,String>)
+}
+
+class InjectorClassGenerator {
++ JavaFile generateClass()
+}
+
+
+Bean <|-[hidden]down- Const
+
+Const <|-[hidden]down- CollectionFactoryMethod
+
+CollectionFactoryMethod <|.. CollectionOfFactoryMethod
+Dependency <|.. CollectionDependency
+CollectionFactoryMethod <|.. ArrayFactoryMethod
+
+ArrayFactoryMethod <|-[hidden]down- Dependency
+
+Dependency <|.. ProviderDependency
+CollectionFactoryMethod <|.. CollectionConstructorFactoryMethod
+Dependency <|.. BasicDependency
+
+ProviderDependency <|-[hidden]down- AbstractProcessor
+AbstractProcessor <|-down- SingletonProcessor
+@enduml

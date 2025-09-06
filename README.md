@@ -1,5 +1,5 @@
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/michaelboyles/simple-di/maven.yml?branch=develop)](https://github.com/michaelboyles/simple-di/actions)
-[![License](https://img.shields.io/github/license/michaelboyles/simple-di)](https://github.com/michaelboyles/simple-di/blob/develop/LICENSE)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/donniexyz/simple-di/maven.yml?branch=develop)](https://github.com/donniexyz/simple-di/actions)
+[![License](https://img.shields.io/github/license/donniexyz/simple-di)](https://github.com/donniexyz/simple-di/blob/develop/LICENSE)
 
 A simple dependency injection framework for Java, using code generation at compile-time.
 
@@ -9,7 +9,7 @@ which are often implemented at runtime using reflection (e.g. Spring). It is not
 It is built around the [`jakarta.inject`](https://docs.oracle.com/javaee/6/api/javax/inject/package-summary.html)
 annotations, though doesn't conform completely to that spec.
 
-Some explanation about the implementation is [on my blog](https://boyl.es/post/simple-di/).
+Some explanation about the implementation is [on michaelboyles blog](https://boyl.es/post/simple-di/).
 
 ### Sample output
 

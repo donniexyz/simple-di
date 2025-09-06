@@ -9,7 +9,7 @@ import java.util.function.Function;
 import static java.util.Collections.emptyList;
 
 /**
- * A dependency via the indirection of a {@link javax.inject.Provider}.
+ * A dependency via the indirection of a {@link jakarta.inject.Provider}.
  */
 @AllArgsConstructor
 class ProviderDependency implements Dependency {

@@ -1,6 +1,6 @@
 package com.github.michaelboyles.simpledi;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 
 /**
  * A simple holder for a value which can be provided in place of a direct dependency. The indirection

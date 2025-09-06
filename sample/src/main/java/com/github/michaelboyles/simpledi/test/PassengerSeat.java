@@ -1,6 +1,6 @@
 package com.github.michaelboyles.simpledi.test;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class PassengerSeat implements Seat {

@@ -1,6 +1,6 @@
 package com.github.michaelboyles.simpledi.test;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public record Engine(Turbocharger turbocharger) {

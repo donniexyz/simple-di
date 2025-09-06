@@ -6,7 +6,7 @@ A simple dependency injection framework for Java, using code generation at compi
 This project is designed to demonstrate how code generation techniques can be used to write frameworks
 which are often implemented at runtime using reflection (e.g. Spring). It is not designed for real-world use.
 
-It is built around the [`javax.inject`](https://docs.oracle.com/javaee/6/api/javax/inject/package-summary.html)
+It is built around the [`jakarta.inject`](https://docs.oracle.com/javaee/6/api/javax/inject/package-summary.html)
 annotations, though doesn't conform completely to that spec.
 
 Some explanation about the implementation is [on my blog](https://boyl.es/post/simple-di/).

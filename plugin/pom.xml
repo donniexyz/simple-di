@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.github.michaelboyles</groupId>
             <artifactId>simple-di-runtime</artifactId>
-            <version>${project.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.auto.service</groupId>
@@ -30,8 +30,8 @@
             <version>1.13.0</version>
         </dependency>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -39,4 +39,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
 </project>

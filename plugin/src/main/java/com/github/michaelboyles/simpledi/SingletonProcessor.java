@@ -3,15 +3,12 @@ package com.github.michaelboyles.simpledi;
 import com.google.auto.service.AutoService;
 import lombok.SneakyThrows;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.inject.Singleton;
+import javax.annotation.processing.*;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Provider;
+import jakarta.inject.Singleton;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -35,10 +32,10 @@ import static com.github.michaelboyles.simpledi.Const.COLLECTION_TO_FACTORY_METH
 import static com.github.michaelboyles.simpledi.Const.INJECTOR_CLASS_NAME;
 
 /**
- * An annotation processor which scans for classes annotated with {@link javax.inject.Singleton} and creates a
+ * An annotation processor which scans for classes annotated with {@link jakarta.inject.Singleton} and creates a
  * dependency injection context.
  */
-@SupportedAnnotationTypes("javax.inject.Singleton")
+@SupportedAnnotationTypes("jakarta.inject.Singleton")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class SingletonProcessor extends AbstractProcessor {

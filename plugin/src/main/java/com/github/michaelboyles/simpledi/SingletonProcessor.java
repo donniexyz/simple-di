@@ -36,7 +36,7 @@ import static com.github.michaelboyles.simpledi.Const.INJECTOR_CLASS_NAME;
  * dependency injection context.
  */
 @SupportedAnnotationTypes("jakarta.inject.Singleton")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_24)
 @AutoService(Processor.class)
 public class SingletonProcessor extends AbstractProcessor {
     @SneakyThrows

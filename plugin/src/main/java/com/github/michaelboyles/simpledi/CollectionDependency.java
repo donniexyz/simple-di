@@ -1,6 +1,6 @@
 package com.github.michaelboyles.simpledi;
 
-import com.squareup.javapoet.CodeBlock;
+import com.palantir.javapoet.CodeBlock;
 
 import java.util.List;
 import java.util.function.Function;

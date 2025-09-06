@@ -26,8 +26,9 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <revision>1.0.1</revision>
 
+        <palantir.javapoet.version>0.7.0</palantir.javapoet.version>
         <lombok.version>1.18.40</lombok.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 
     </properties>
 

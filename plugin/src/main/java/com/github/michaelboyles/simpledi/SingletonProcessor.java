@@ -34,7 +34,8 @@ import static com.github.michaelboyles.simpledi.Const.*;
  */
 @SupportedAnnotationTypes("jakarta.inject.Singleton")
 @SupportedSourceVersion(SourceVersion.RELEASE_24)
-@SupportedOptions({SingletonProcessor.OPTION_FORCE_REGENERATE, SingletonProcessor.OPTION_PROJECT_DIR})
+@SupportedOptions({SingletonProcessor.OPTION_FORCE_REGENERATE, SingletonProcessor.OPTION_PROJECT_DIR,
+        SingletonProcessor.OPTION_CLASS_NAME, SingletonProcessor.OPTION_PACKAGE_NAME})
 @AutoService(Processor.class)
 public class SingletonProcessor extends AbstractProcessor {
 
@@ -57,11 +58,14 @@ public class SingletonProcessor extends AbstractProcessor {
      * mvn clean install -DcompilerArgs="-Asimpledi.project.dir=[some path]"
      * or
      * <compilerArgs> <arg>-Asimpledi.project.dir=${project.basedir}</arg>
-     *
+     * <p>
      * if unset or blank will store in StandardLocation.SOURCE_OUTPUT
      * Used to store fingerprint file
      */
     public static final String OPTION_PROJECT_DIR = "simpledi.project.dir";
+
+    public static final String OPTION_CLASS_NAME = "simpledi.class.name";
+    public static final String OPTION_PACKAGE_NAME = "simpledi.package.name";
 
     @SneakyThrows
     @Override
@@ -85,15 +89,29 @@ public class SingletonProcessor extends AbstractProcessor {
         processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.NOTE, "simple-di: Changes detected, regenerating DI context.");
 
 
-        JavaFileObject builderFile = processingEnv.getFiler().createSourceFile(INJECTOR_FQN_NAME);
+        JavaFileObject builderFile = processingEnv.getFiler().createSourceFile(getInjectorFqnName());
         try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
-            InjectorClassGenerator generator = new InjectorClassGenerator(INJECTOR_CLASS_NAME, sortedBeans);
+            InjectorClassGenerator generator = new InjectorClassGenerator(getInjectorPackageName(), getInjectorClassName(), sortedBeans);
             generator.generateClass().writeTo(out);
         }
 
         writeFingerprint(newFingerprint);
 
         return true;
+    }
+
+    private String getInjectorFqnName() {
+        return getInjectorPackageName() + "." + getInjectorClassName();
+    }
+
+    private String getInjectorPackageName() {
+        String optPackageName = processingEnv.getOptions().get(OPTION_PACKAGE_NAME);
+        return null == optPackageName || optPackageName.isBlank() ? INJECTOR_DEFAULT_PACKAGE_NAME : optPackageName;
+    }
+
+    private String getInjectorClassName() {
+        String optClassName = processingEnv.getOptions().get(OPTION_CLASS_NAME);
+        return null == optClassName || optClassName.isBlank() ? INJECTOR_DEFAULT_CLASS_NAME : optClassName;
     }
 
     private boolean isRegenerationRequired(String newFingerprint) {
@@ -131,7 +149,7 @@ public class SingletonProcessor extends AbstractProcessor {
 
     private Optional<String> readOldFingerprintInStandardLocation() {
         try {
-            FileObject resource = processingEnv.getFiler().getResource(StandardLocation.SOURCE_OUTPUT, INJECTOR_PACKAGE_NAME, FINGERPRINT_RESOURCE_NAME);
+            FileObject resource = processingEnv.getFiler().getResource(StandardLocation.SOURCE_OUTPUT, getInjectorPackageName(), FINGERPRINT_RESOURCE_NAME);
             try (InputStream inputStream = resource.openInputStream()) {
                 return Optional.of(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
             }
@@ -159,7 +177,7 @@ public class SingletonProcessor extends AbstractProcessor {
     }
 
     private void writeFingerprintInStandardLocation(String fingerprint) throws IOException {
-        FileObject resource = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, INJECTOR_PACKAGE_NAME, FINGERPRINT_RESOURCE_NAME);
+        FileObject resource = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, getInjectorPackageName(), FINGERPRINT_RESOURCE_NAME);
         try (PrintWriter out = new PrintWriter(resource.openWriter())) {
             out.print(fingerprint);
         }

@@ -1,0 +1,54 @@
+@startuml
+interface Seat {
+~ String getPosition()
+}
+
+class Driver {
++ String toString()
+}
+
+class VehicleService {
++ void executeVehicle()
+}
+
+class Turbocharger {
++ String getCondition()
+}
+
+class Engine {
+- Turbocharger turbocharger
++ <<Create>> Engine(Turbocharger)
++ Turbocharger turbocharger()
+}
+
+
+class Car {
+- Engine engine
+- Seat driversSeat
+- List<? extends Seat> seats
++ <<Create>> Car(Engine,Seat,List<? extends Seat>,Provider<Car>)
++ <<Create>> Car()
++ void addDriver(Driver)
++ void addSeats(Seat[])
+}
+
+
+class DriversSeat {
++ String getPosition()
+}
+
+class PassengerSeat {
++ String getPosition()
+}
+
+Car --|> Engine
+'Car --|> Seat
+
+Engine --|> Turbocharger
+Car "1" o-- "0..1" Driver : driver
+Car "1" o-- "*" Seat : seats
+
+
+Seat <|.. DriversSeat
+Seat <|.. PassengerSeat
+@enduml

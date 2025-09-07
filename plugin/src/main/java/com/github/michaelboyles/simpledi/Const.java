@@ -22,6 +22,8 @@ class Const {
      * The package of the DI injector class which will be generated.
      */
     static final String INJECTOR_PACKAGE_NAME = "com.example";
+
+    static final String INJECTOR_FQN_NAME = INJECTOR_PACKAGE_NAME + "." + INJECTOR_CLASS_NAME;
     /**
      * A map of Collection implementations to a factory method capable of create an instance of that Collection,
      * ordered from most specific to least specific.

@@ -1,8 +1,8 @@
 package com.github.michaelboyles.simpledi;
 
+import com.google.errorprone.annotations.CheckReturnValue;
 import com.palantir.javapoet.CodeBlock;
 
-import javax.annotation.CheckReturnValue;
 import java.util.List;
 import java.util.function.Function;
 
@@ -26,4 +26,10 @@ interface Dependency {
      */
     @CheckReturnValue
     CodeBlock getArgumentExpression(Function<Bean, String> getIdentifier);
+
+    /**
+     * Gets a string representation of the dependency's type for fingerprinting.
+     */
+    @CheckReturnValue
+    String getTypeSignature();
 }

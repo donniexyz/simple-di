@@ -11,6 +11,7 @@ import javax.lang.model.type.TypeMirror;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -80,5 +81,23 @@ class Bean {
             .map(ProviderDependency::allBeans)
             .flatMap(List::stream)
             .toList();
+    }
+
+    /**
+     * Generates a stable string representation of the bean's API, used for fingerprinting.
+     * This includes the bean's name, constructor, and any inject methods.
+     */
+    public String getApiSignature() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Bean{name='").append(name).append('\'');
+        sb.append(", fqn='").append(getFqn()).append('\'');
+
+        String constructorSignature = constructor.getParameters().stream()
+                .map(p -> p.asType().toString()).collect(Collectors.joining(","));
+        sb.append(", constructor=(").append(constructorSignature).append(")");
+
+        injectMethods.forEach(im -> sb.append(im.getSignature()));
+
+        return sb.append("}").toString();
     }
 }

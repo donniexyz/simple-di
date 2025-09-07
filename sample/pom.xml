@@ -54,6 +54,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <compilerArgs>
+<!--                        <arg>-Asimpledi.force.regenerate=none</arg>-->
+<!--                        <arg>-Asimpledi.project.dir=${project.basedir}</arg>-->
+                    </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

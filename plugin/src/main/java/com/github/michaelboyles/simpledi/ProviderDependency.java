@@ -31,4 +31,9 @@ class ProviderDependency implements Dependency {
     public CodeBlock getArgumentExpression(Function<Bean, String> getIdentifier) {
         return CodeBlock.of("$L", getIdentifier.apply(bean) + PROVIDER_IDENTIFIER_SUFFIX);
     }
+
+    @Override
+    public String getTypeSignature() {
+        return bean.getFqn();
+    }
 }

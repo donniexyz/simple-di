@@ -27,4 +27,9 @@ class BasicDependency implements Dependency {
     public CodeBlock getArgumentExpression(Function<Bean, String> getIdentifier) {
         return CodeBlock.of("$L", getIdentifier.apply(bean));
     }
+
+    @Override
+    public String getTypeSignature() {
+        return bean.getFqn();
+    }
 }

@@ -38,4 +38,9 @@ class CollectionDependency implements Dependency {
         }
         return factoryMethod.instantiateCollection(arguments.build());
     }
+
+    @Override
+    public String getTypeSignature() {
+        return contents.getFirst().getFqn();
+    }
 }
